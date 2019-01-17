@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="./app.css">
+
+    <title>EasyFit</title>
+</head>
+<body class="text-center">
+
+    <form class="w-50">
+        <h1 class="h3 mb-3 font-weight-normal"><img src="./Fitbit_logo_RGB.svg" alt=""> EasyFit: The activity logger</h1>
+        
+        <input name="start" id="start" class="btn btn-success btn-block" type="button" value="Commencer">
+        <input name="stop" id="stop" class="btn btn-danger btn-block" type="button" value="Terminer">
+        
+        <hr>
+
+        <div class="form-group">
+            <select id="activityList" class="custom-select w-100"></select>
+        </div>
+
+        <div class="input-group mb-3">
+            <input id="distance" type="number" class="form-control" placeholder="Distance">
+            <div class="input-group-append">
+                <span class="input-group-text">km</span>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <input id="calories" type="number" class="form-control" placeholder="Calories">
+            <div class="input-group-append">
+                <span class="input-group-text">cal</span>
+            </div>
+        </div>
+
+        <input id="add" class="btn btn-primary btn-block" type="button" value="Envoyer l'activité">
+    </form>
+
+    <script src="./app.js"></script>
+</body>
+</html>
