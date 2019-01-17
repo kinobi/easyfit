@@ -1,11 +1,12 @@
-const startBtn = document.querySelector("#start");
-const stopBtn = document.querySelector("#stop");
-const addBtn = document.querySelector("#add");
-const activityList = document.querySelector("#activityList");
-const caloriesInput = document.querySelector("#calories");
-const distanceInput = document.querySelector("#distance");
-let token;
-let workout = false;
+const startBtn = document.querySelector("#start"),
+      stopBtn = document.querySelector("#stop"),
+      addBtn = document.querySelector("#add"),
+      activityList = document.querySelector("#activityList"),
+      caloriesInput = document.querySelector("#calories"),
+      distanceInput = document.querySelector("#distance");
+
+let token,
+    workout = false;
 
 loadEventListeners();
 updateUI();
