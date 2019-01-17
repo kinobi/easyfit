@@ -95,7 +95,7 @@ function fitbitLogin() {
         return;
     }
 
-    const fitbitAuth = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=22948L&redirect_uri=https%3A%2F%2Feasyfitbit.herokuapp.com%2F&scope=activity%20nutrition%20profile%20social&expires_in=604800";
+    const fitbitAuth = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=22948L&redirect_uri=https%3A%2F%2Feasyfit.kinobiweb.com%2F&scope=activity%20profile&expires_in=604800";
     window.location.replace(fitbitAuth);
 }
 
