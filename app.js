@@ -70,7 +70,11 @@ function addWorkout(e) {
     const req = fitbitRequest(fitbitActivities, "POST", formData);
     fetch(req)
         .then(res => res.json())
-        .then(data => console.log("Success", data))
+        .then(data => { 
+            console.log("Success", data);
+            resetLogger();
+            updateUI();
+        })
         .catch(err => {
             console.error("KO", err);
         });
@@ -131,6 +135,12 @@ function getActivity() {
         .catch(err => {
             console.error("KO", err);
         });
+}
+
+function resetLogger() {
+    distanceInput.value = "";
+    caloriesInput.value = "";
+    sessionStorage.clear();
 }
 
 function updateUI() {
