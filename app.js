@@ -8,6 +8,19 @@ const startBtn = document.querySelector("#start"),
 let token,
     workout = false;
 
+class UI {
+   static showMessage(msg, type) {
+        const div = document.createElement('div');
+        div.className = `alert alert-${type} mt-3`;
+        div.innerText = msg;
+
+        const form = document.querySelector("form");
+        form.appendChild(div)
+
+        setTimeout(() => document.querySelector(".alert").remove(), 3000);
+    }
+}
+
 loadEventListeners();
 updateUI();
 
@@ -57,7 +70,7 @@ function addWorkout(e) {
 
     console.log("addWorkout:activity", activity);
     if(isNaN(activity.manualCalories) || isNaN(activity.distance)) {
-        alert("Invalid activity !");
+        UI.showMessage("Veuillez vérifier la distance et le nombre de calories", "danger");
         return;
     }
 
@@ -71,12 +84,12 @@ function addWorkout(e) {
     fetch(req)
         .then(res => res.json())
         .then(data => { 
-            console.log("Success", data);
+            UI.showMessage("Activité enregistrée !", "success");
             resetLogger();
             updateUI();
         })
         .catch(err => {
-            console.error("KO", err);
+            UI.showMessage(`Erreur lors de l'envoi de l'activité: ${err}`, "danger");
         });
 }
 
@@ -133,7 +146,7 @@ function getActivity() {
             });
         })
         .catch(err => {
-            console.error("KO", err);
+            UI.showMessage(`Erreur lors de la récupération des activités: ${err}`, "danger");
         });
 }
 
