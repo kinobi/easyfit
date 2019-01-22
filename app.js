@@ -5,17 +5,17 @@ if ('serviceWorker' in navigator) {
 }
 
 const startBtn = document.querySelector("#start"),
-      stopBtn = document.querySelector("#stop"),
-      addBtn = document.querySelector("#add"),
-      activityList = document.querySelector("#activityList"),
-      caloriesInput = document.querySelector("#calories"),
-      distanceInput = document.querySelector("#distance");
+    stopBtn = document.querySelector("#stop"),
+    addBtn = document.querySelector("#add"),
+    activityList = document.querySelector("#activityList"),
+    caloriesInput = document.querySelector("#calories"),
+    distanceInput = document.querySelector("#distance");
 
 let token,
     workout = false;
 
 class UI {
-   static showMessage(msg, type) {
+    static showMessage(msg, type) {
         const div = document.createElement('div');
         div.className = `alert alert-${type} mt-3`;
         div.innerText = msg;
@@ -25,10 +25,27 @@ class UI {
 
         setTimeout(() => document.querySelector(".alert").remove(), 3000);
     }
+
+    static update() {
+        addBtn.disabled = "disabled";
+
+        if (workout) {
+            startBtn.style.display = "none";
+            stopBtn.style.display = "block";
+        } else {
+            startBtn.style.display = "block";
+            stopBtn.style.display = "none";
+        }
+    }
+
+    static resetInputs() {
+        distanceInput.value = "";
+        caloriesInput.value = "";
+    }
 }
 
 loadEventListeners();
-updateUI();
+UI.update();
 
 function loadEventListeners() {
     document.addEventListener("DOMContentLoaded", init);
@@ -44,7 +61,7 @@ function startWorkout(e) {
     sessionStorage.removeItem('stoppedAt');
 
     workout = true;
-    updateUI();
+    UI.update();
 
     e.preventDefault();
 }
@@ -55,7 +72,7 @@ function stopWorkout(e) {
     sessionStorage.setItem('stoppedAt', stopTime.toJSON());
 
     workout = false;
-    updateUI();
+    UI.update();
     addBtn.disabled = "";
 
     e.preventDefault();
@@ -75,24 +92,24 @@ function addWorkout(e) {
     };
 
     console.log("addWorkout:activity", activity);
-    if(isNaN(activity.manualCalories) || isNaN(activity.distance)) {
+    if (isNaN(activity.manualCalories) || isNaN(activity.distance)) {
         UI.showMessage("Veuillez vérifier la distance et le nombre de calories", "danger");
         return;
     }
 
     const fitbitActivities = `https://api.fitbit.com/1/user/-/activities.json`;
     const formData = new FormData();
-    for(k in activity) {
+    for (k in activity) {
         formData.append(k, activity[k]);
     }
 
     const req = fitbitRequest(fitbitActivities, "POST", formData);
     fetch(req)
         .then(res => res.json())
-        .then(data => { 
+        .then(data => {
             UI.showMessage("Activité enregistrée !", "success");
             resetLogger();
-            updateUI();
+            UI.update();
         })
         .catch(err => {
             UI.showMessage(`Erreur lors de l'envoi de l'activité: ${err}`, "danger");
@@ -112,7 +129,10 @@ function fitbitLogin() {
     if (document.location.hash !== "") {
         const credentials = (document.location.hash).substr(1).split("&")
             .map(v => v.split("="))
-            .reduce((pre, [key, value]) => ({ ...pre, [key]: value }), {});
+            .reduce((pre, [key, value]) => ({
+                ...pre,
+                [key]: value
+            }), {});
 
         localStorage.setItem("token", credentials.access_token);
         token = credentials.access_token;
@@ -157,19 +177,6 @@ function getActivity() {
 }
 
 function resetLogger() {
-    distanceInput.value = "";
-    caloriesInput.value = "";
+    UI.resetInputs();
     sessionStorage.clear();
-}
-
-function updateUI() {
-    addBtn.disabled = "disabled";
-
-    if (workout) {
-        startBtn.style.display = "none";
-        stopBtn.style.display = "block";
-    } else {
-        startBtn.style.display = "block";
-        stopBtn.style.display = "none";
-    }
 }
