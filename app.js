@@ -1,3 +1,9 @@
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js');
+    });
+}
+
 const startBtn = document.querySelector("#start"),
       stopBtn = document.querySelector("#stop"),
       addBtn = document.querySelector("#add"),
