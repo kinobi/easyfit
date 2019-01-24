@@ -15,15 +15,18 @@ let token,
     workout = false;
 
 class UI {
-    static showMessage(msg, type) {
+    static showMessage(msg, type, persistent) {
+        persistent = (persistent === undefined) ? false : persistent;
         const div = document.createElement('div');
         div.className = `alert alert-${type} mt-3`;
-        div.innerText = msg;
+        div.innerHTML = msg;
 
         const form = document.querySelector("form");
         form.appendChild(div)
 
-        setTimeout(() => document.querySelector(".alert").remove(), 3000);
+        if (!persistent) {
+            setTimeout(() => document.querySelector(".alert").remove(), 3000);
+        }
     }
 
     static update() {
@@ -118,29 +121,36 @@ function addWorkout(e) {
 
 function init() {
     token = localStorage.getItem("token");
-    if (!token) {
+    if (!token || token == "undefined") {
         fitbitLogin();
+        return;
     }
 
     getActivity();
 }
 
 function fitbitLogin() {
-    if (document.location.hash !== "") {
-        const credentials = (document.location.hash).substr(1).split("&")
-            .map(v => v.split("="))
-            .reduce((pre, [key, value]) => ({
-                ...pre,
-                [key]: value
-            }), {});
+    if (document.location.hash == "") {
+        const fitbitAuth = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=22948L&redirect_uri=https%3A%2F%2Feasyfit.kinobiweb.com%2F&scope=activity%20profile&expires_in=604800";
 
-        localStorage.setItem("token", credentials.access_token);
-        token = credentials.access_token;
+        startBtn.disabled = "disabled";
+        UI.showMessage(`
+        Veuillez vous connecter sur <a href="${fitbitAuth}">FitBit</a>`, "info", true);
+
         return;
     }
 
-    const fitbitAuth = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=22948L&redirect_uri=https%3A%2F%2Feasyfit.kinobiweb.com%2F&scope=activity%20profile&expires_in=604800";
-    window.location.replace(fitbitAuth);
+    const credentials = (document.location.hash).substr(1).split("&")
+        .map(v => v.split("="))
+        .reduce((pre, [key, value]) => ({
+            ...pre,
+            [key]: value
+        }), {});
+
+    localStorage.setItem("token", credentials.access_token);
+    token = credentials.access_token;
+
+    getActivity();
 }
 
 function fitbitRequest(endpoint, method, body) {
