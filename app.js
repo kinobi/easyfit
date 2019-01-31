@@ -109,6 +109,7 @@ function fitbitLogin() {
 
     localStorage.setItem("token", credentials.access_token);
     token = credentials.access_token;
+    init();
 }
 
 // Fetch activities from Fitbit
