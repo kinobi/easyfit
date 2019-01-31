@@ -11,41 +11,9 @@ const startBtn = document.querySelector("#start"),
     caloriesInput = document.querySelector("#calories"),
     distanceInput = document.querySelector("#distance");
 
-let token,
+let fitbit,
+    token,
     workout = false;
-
-class UI {
-    static showMessage(msg, type, persistent) {
-        persistent = (persistent === undefined) ? false : persistent;
-        const div = document.createElement('div');
-        div.className = `alert alert-${type} mt-3`;
-        div.innerHTML = msg;
-
-        const form = document.querySelector("form");
-        form.appendChild(div)
-
-        if (!persistent) {
-            setTimeout(() => document.querySelector(".alert").remove(), 3000);
-        }
-    }
-
-    static update() {
-        addBtn.disabled = "disabled";
-
-        if (workout) {
-            startBtn.style.display = "none";
-            stopBtn.style.display = "block";
-        } else {
-            startBtn.style.display = "block";
-            stopBtn.style.display = "none";
-        }
-    }
-
-    static resetInputs() {
-        distanceInput.value = "";
-        caloriesInput.value = "";
-    }
-}
 
 loadEventListeners();
 UI.update();
@@ -55,6 +23,17 @@ function loadEventListeners() {
     startBtn.addEventListener("click", startWorkout);
     stopBtn.addEventListener("click", stopWorkout);
     addBtn.addEventListener("click", addWorkout);
+}
+
+function init() {
+    token = localStorage.getItem("token");
+    if (!token || token == "undefined") {
+        fitbitLogin();
+        return;
+    }
+
+    fitbit = new Fitbit(token);
+    getActivity();
 }
 
 function startWorkout(e) {
@@ -94,21 +73,12 @@ function addWorkout(e) {
         "distance": parseFloat(distanceInput.value).toString(),
     };
 
-    console.log("addWorkout:activity", activity);
     if (isNaN(activity.manualCalories) || isNaN(activity.distance)) {
         UI.showMessage("Veuillez vérifier la distance et le nombre de calories", "danger");
         return;
     }
 
-    const fitbitActivities = `https://api.fitbit.com/1/user/-/activities.json`;
-    const formData = new FormData();
-    for (k in activity) {
-        formData.append(k, activity[k]);
-    }
-
-    const req = fitbitRequest(fitbitActivities, "POST", formData);
-    fetch(req)
-        .then(res => res.json())
+    fitbit.addActivity(activity)
         .then(data => {
             UI.showMessage("Activité enregistrée !", "success");
             resetLogger();
@@ -117,16 +87,6 @@ function addWorkout(e) {
         .catch(err => {
             UI.showMessage(`Erreur lors de l'envoi de l'activité: ${err}`, "danger");
         });
-}
-
-function init() {
-    token = localStorage.getItem("token");
-    if (!token || token == "undefined") {
-        fitbitLogin();
-        return;
-    }
-
-    getActivity();
 }
 
 function fitbitLogin() {
@@ -149,27 +109,11 @@ function fitbitLogin() {
 
     localStorage.setItem("token", credentials.access_token);
     token = credentials.access_token;
-
-    getActivity();
 }
 
-function fitbitRequest(endpoint, method, body) {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${token}`);
-    headers.append("Accept-Locale", "fr_FR");
-
-    return new Request(endpoint, {
-        headers,
-        method,
-        body
-    });
-}
-
+// Fetch activities from Fitbit
 function getActivity() {
-    // Fetch activities from Fitbit
-    const req = fitbitRequest("https://api.fitbit.com/1/user/-/activities/recent.json", "GET");
-    fetch(req)
-        .then(res => res.json())
+    fitbit.getActivities()
         .then(activities => {
             activities.forEach(activity => {
                 // create option
@@ -183,6 +127,7 @@ function getActivity() {
         })
         .catch(err => {
             UI.showMessage(`Erreur lors de la récupération des activités: ${err}`, "danger");
+            fitbitLogin()
         });
 }
 

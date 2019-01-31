@@ -1,8 +1,10 @@
-const CACHE_NAME = 'easyfit-v1';
+const CACHE_NAME = 'easyfit-v0';
 const urlsToCache = [
     '/',
     '/favicon.ico',
     '/app.css',
+    '/fitbit.js',
+    '/ui.js',
     '/app.js',
     '/img/easyfit.svg'
 ];
