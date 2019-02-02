@@ -23,8 +23,8 @@ function loadEventListeners() {
 }
 
 function init() {
-    token = localStorage.getItem("token");
-    if (!token || token == "undefined") {
+    token = Storage.getToken();
+    if (!token) {
         fitbitLogin();
         return;
     }
@@ -96,8 +96,7 @@ function fitbitLogin() {
     }
 
     const credentials = Fitbit.parseCredentials(parsedUrl.hash);
-    localStorage.setItem("token", credentials.access_token);
-    token = credentials.access_token;
+    token = Storage.setToken(credentials);
     init();
     ui.showMessage('Vous êtes connecté avec Fitbit !', 'success');
 }

@@ -8,7 +8,7 @@ class Fitbit {
         const clientId = '22948L';
         const redirectTo = encodeURIComponent(`${protocol}//${host}/`);
 
-        return `https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=${redirectTo}&scope=activity%20profile&expires_in=604800`;
+        return `https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=${redirectTo}&scope=activity&expires_in=604800`;
     }
 
     // parseCredentials returns the credentials returned by Fitbit

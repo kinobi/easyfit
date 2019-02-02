@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easyfit-v0.8.0';
+const CACHE_NAME = 'easyfit-v1.0';
 
 const urlsToCache = [
     '/',

@@ -1,6 +1,6 @@
 # EasyFit
 
-A Fitbit activity logging helper
+A PWA Fitbit activity logging helper
 
 ## About
 
