@@ -90,8 +90,9 @@ function addWorkout(e) {
 }
 
 function fitbitLogin() {
-    if (document.location.hash == "") {
-        const fitbitAuth = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=22948L&redirect_uri=https%3A%2F%2Feasyfit.kinobiweb.com%2F&scope=activity%20profile&expires_in=604800";
+    const parsedUrl = new URL(window.location.href);
+    if (parsedUrl.hash == "") {
+        const fitbitAuth = Fitbit.authURI(parsedUrl.protocol, parsedUrl.host);
 
         startBtn.disabled = "disabled";
         UI.showMessage(`
@@ -100,13 +101,7 @@ function fitbitLogin() {
         return;
     }
 
-    const credentials = (document.location.hash).substr(1).split("&")
-        .map(v => v.split("="))
-        .reduce((pre, [key, value]) => ({
-            ...pre,
-            [key]: value
-        }), {});
-
+    const credentials = Fitbit.parseCredentials(parsedUrl.hash);
     localStorage.setItem("token", credentials.access_token);
     token = credentials.access_token;
     init();
