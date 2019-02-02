@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easyfit-v0.7.0';
+const CACHE_NAME = 'easyfit-v0.8.0';
 
 const urlsToCache = [
     '/',
@@ -13,10 +13,10 @@ const urlsToCache = [
 self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.open(CACHE_NAME)
-        .then(function (cache) {
+        .then((cache) => {
             return cache.addAll(urlsToCache);
         })
-        .then(function () {
+        .then(() => {
             return self.skipWaiting();
         })
     );

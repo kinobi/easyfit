@@ -4,7 +4,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-const ui = new UI(), 
+const ui = new UI(),
     activityList = document.querySelector("#activityList"),
     caloriesInput = document.querySelector("#calories"),
     distanceInput = document.querySelector("#distance");
@@ -105,8 +105,17 @@ function fitbitLogin() {
 // Fetch activities from Fitbit
 function getActivity() {
     fitbit.getActivities()
-        .then(activities => ui.populateActivityList(activities))
+        .then(activities => {
+            Storage.setActivities(activities);
+            ui.populateActivityList(activities);
+        })
         .catch(err => {
+            const activities = Storage.getActivities();
+            if (activities) {
+                ui.populateActivityList(activities);
+                return;
+            }
+
             ui.showMessage(`Erreur lors de la récupération des activités: ${err}`, "danger");
             fitbitLogin()
         });
